@@ -52,7 +52,7 @@ async function loadArtworks() {
     if (artId) {
         const target = artworks.find(a => a.id === artId);
         if (target) {
-            openArtwork(target);
+            await openArtwork(target);
         }
     }
 }
@@ -112,29 +112,33 @@ async function openArtwork(art) {
     document.body.style.overflow = 'hidden';
 }
 
-// closeModal
-document.getElementById('closeModal').addEventListener('click', () => {
+function closeModal() {
     document.getElementById('modal').classList.add('hidden');
+
     history.pushState(
         {},
         '',
         window.location.pathname
     );
+
     document.body.style.overflow = '';
-});
+    currentArtworkId = null;
+}
+
+// close button for modal
+document.getElementById('closeModal').addEventListener('click', closeModal);
 
 // close modal for esc key
 document.addEventListener('keydown', e => {
     if (e.key === 'Escape') {
-        document.getElementById('modal').classList.add('hidden');
-        document.body.style.overflow = '';
+        closeModal();
     }
 });
 
+// 背景クリック
 document.getElementById('modal').addEventListener('click', e => {
     if (e.target.id === 'modal') {
-        e.currentTarget.classList.add('hidden');
-        document.body.style.overflow = '';
+        closeModal();
     }
 });
 
