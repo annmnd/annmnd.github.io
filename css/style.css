@@ -1,0 +1,33 @@
+body{
+    margin:0;
+    background:#111;
+    color:white;
+    font-family:sans-serif;
+}
+
+#gallery{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+    gap:16px;
+    padding:16px;
+}
+
+.card{
+    position:relative;
+}
+
+.card img{
+    width:100%;
+    display:block;
+}
+
+.overlay{
+    position:absolute;
+    left:0;
+    right:0;
+    bottom:0;
+    display:flex;
+    justify-content:space-between;
+    background:rgba(0,0,0,.7);
+    padding:8px 12px;
+}
