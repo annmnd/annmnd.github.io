@@ -108,3 +108,16 @@ body {
 .nav-thumb.empty {
     visibility:hidden;
 }
+
+.nav-title {
+    display:block;
+    margin-top:6px;
+    font-size:12px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+.nav-thumb.current .nav-title {
+    font-weight:bold;
+}

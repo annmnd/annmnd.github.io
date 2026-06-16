@@ -91,16 +91,13 @@ function createNavThumbnail(art, label) {
             class="nav-thumb${currentClass}"
             data-art-id="${art.id}"
         >
-
             <img
                 src="images/thumbnails/${art.thumbnail_filename}"
                 alt="${art.title}"
             >
-
-            <span class="nav-label">
-                ${label}
+            <span class="nav-title">
+                ${art.title}
             </span>
-
         </div>
     `;
 }
