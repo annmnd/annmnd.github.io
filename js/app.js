@@ -42,17 +42,37 @@ async function loadArtworks() {
     });
 }
 
-function openArtwork(art) {
+async function openArtwork(art) {
     const modal = document.getElementById('modal');
-
     const modalBody = document.getElementById('modalBody');
+
+    const { data: images, error } = await supabaseClient
+        .from('artwork_images')
+        .select('*')
+        .eq('artwork_id', art.id)
+        .order('display_order');
+
+    if (error) {
+        console.error(error);
+        return;
+    }
+
+    let imageHtml = '';
+    images.forEach(image => {
+        imageHtml += `
+            <img
+                class="artwork-image"
+                src="images/originals/${image.image_filename}"
+                loading="lazy"
+            >
+        `;
+    });
 
     modalBody.innerHTML = `
         <h2>${art.title}</h2>
-        <p>
-            artwork id:
-            ${art.id}
-        </p>
+        <div class="artwork-images">
+            ${imageHtml}
+        </div>
     `;
 
     modal.classList.remove('hidden');

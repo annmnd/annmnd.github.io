@@ -63,3 +63,15 @@ body{
     padding:8px 12px;
     cursor:pointer;
 }
+
+.artwork-images{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+}
+
+.artwork-image{
+    width:100%;
+    display:block;
+    border-radius:8px;
+}
