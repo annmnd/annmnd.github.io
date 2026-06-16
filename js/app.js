@@ -77,8 +77,7 @@ function getArtworkNavigation(artId) {
 function createNavThumbnail(art, label) {
     if (!art) {
         return `
-            <div class="nav-thumb empty">
-            </div>
+            <div class="nav-thumb empty"></div>
         `;
     }
 
@@ -92,7 +91,16 @@ function createNavThumbnail(art, label) {
             class="nav-thumb${currentClass}"
             data-art-id="${art.id}"
         >
-            ...
+
+            <img
+                src="images/thumbnails/${art.thumbnail_filename}"
+                alt="${art.title}"
+            >
+
+            <span class="nav-label">
+                ${label}
+            </span>
+
         </div>
     `;
 }

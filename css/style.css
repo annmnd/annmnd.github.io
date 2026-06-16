@@ -84,18 +84,22 @@ body {
 }
 
 .nav-thumb {
-    width:110px;
+    width:140px;
     cursor:pointer;
     text-align:center;
 }
 
 .nav-thumb img {
     width:100%;
-    border-radius:8px;
     display:block;
+    border-radius:6px;
 }
 
-.nav-thumb span {
+.nav-thumb.current img {
+    border:3px solid white;
+}
+
+.nav-label {
     display:block;
     margin-top:4px;
     font-size:12px;
@@ -103,8 +107,4 @@ body {
 
 .nav-thumb.empty {
     visibility:hidden;
-}
-
-.nav-thumb.current img {
-    border:3px solid #fff;
 }
