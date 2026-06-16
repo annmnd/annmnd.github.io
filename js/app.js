@@ -34,8 +34,32 @@ async function loadArtworks() {
             </div>
         `;
 
+        card.addEventListener('click', () => {
+            openArtwork(art);
+        });
+
         gallery.appendChild(card);
     });
 }
+
+function openArtwork(art) {
+    const modal = document.getElementById('modal');
+
+    const modalBody = document.getElementById('modalBody');
+
+    modalBody.innerHTML = `
+        <h2>${art.title}</h2>
+        <p>
+            artwork id:
+            ${art.id}
+        </p>
+    `;
+
+    modal.classList.remove('hidden');
+}
+
+document.getElementById('closeModal').addEventListener('click', () => {
+    document.getElementById('modal').classList.add('hidden');
+});
 
 loadArtworks();
