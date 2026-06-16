@@ -1,6 +1,9 @@
 const SUPABASE_URL = "https://eebtkvrvbuaxvkzfbtfo.supabase.co";
 const SUPABASE_KEY = "sb_publishable_flbM2x1ZS30nzV3fqs_qTw_rpbphb72";
 
+let artworks = [];
+let currentArtworkId = null;
+
 const supabaseClient =
     supabase.createClient(
         SUPABASE_URL,
@@ -18,6 +21,8 @@ async function loadArtworks() {
         console.error(error);
         return;
     }
+
+    artworks = data;
 
     const gallery = document.getElementById('gallery');
     gallery.innerHTML = '';
@@ -40,9 +45,20 @@ async function loadArtworks() {
 
         gallery.appendChild(card);
     });
+
+    const params = new URLSearchParams(window.location.search);
+    const artId = params.get('art');
+
+    if (artId) {
+        const target = artworks.find(a => a.id === artId);
+        if (target) {
+            openArtwork(target);
+        }
+    }
 }
 
 async function openArtwork(art) {
+    currentArtworkId = art.id;
     const modal = document.getElementById('modal');
     const modalBody = document.getElementById('modalBody');
 
@@ -86,15 +102,28 @@ async function openArtwork(art) {
         </div>
     `;
 
+    history.pushState(
+        {},
+        '',
+        `?art=${art.id}`
+    );
+
     modal.classList.remove('hidden');
     document.body.style.overflow = 'hidden';
 }
 
+// closeModal
 document.getElementById('closeModal').addEventListener('click', () => {
     document.getElementById('modal').classList.add('hidden');
+    history.pushState(
+        {},
+        '',
+        window.location.pathname
+    );
     document.body.style.overflow = '';
 });
 
+// close modal for esc key
 document.addEventListener('keydown', e => {
     if (e.key === 'Escape') {
         document.getElementById('modal').classList.add('hidden');
