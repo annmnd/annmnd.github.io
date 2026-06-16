@@ -149,15 +149,15 @@ async function openArtwork(art) {
         <div class="artwork-nav">
             ${createNavThumbnail(
                 nav.prev,
-                '前'
+                art.title
             )}
             ${createNavThumbnail(
                 nav.current,
-                '現在'
+                art.title
             )}
             ${createNavThumbnail(
                 nav.next,
-                '次'
+                art.title
             )}
         </div>
         <h2>${art.title}</h2>
