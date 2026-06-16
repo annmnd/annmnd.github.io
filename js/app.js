@@ -57,6 +57,46 @@ async function loadArtworks() {
     }
 }
 
+function getArtworkNavigation(artId) {
+    const currentIndex = artworks.findIndex(a => a.id === artId);
+
+    return {
+        prev:
+            currentIndex > 0
+                ? artworks[currentIndex - 1]
+                : null,
+        current:
+            artworks[currentIndex],
+        next:
+            currentIndex < artworks.length - 1
+                ? artworks[currentIndex + 1]
+                : null
+    };
+}
+
+function createNavThumbnail(art, label) {
+    if (!art) {
+        return `
+            <div class="nav-thumb empty">
+            </div>
+        `;
+    }
+
+    const currentClass =
+        label === '現在'
+            ? ' current'
+            : '';
+
+    return `
+        <div
+            class="nav-thumb${currentClass}"
+            data-art-id="${art.id}"
+        >
+            ...
+        </div>
+    `;
+}
+
 async function openArtwork(art) {
     currentArtworkId = art.id;
     const modal = document.getElementById('modal');
@@ -83,6 +123,8 @@ async function openArtwork(art) {
         return;
     }
 
+    const nav = getArtworkNavigation(art.id);
+
     let imageHtml = '';
     images.forEach(image => {
         imageHtml += `
@@ -96,11 +138,38 @@ async function openArtwork(art) {
     });
 
     modalBody.innerHTML = `
+        <div class="artwork-nav">
+            ${createNavThumbnail(
+                nav.prev,
+                '前'
+            )}
+            ${createNavThumbnail(
+                nav.current,
+                '現在'
+            )}
+            ${createNavThumbnail(
+                nav.next,
+                '次'
+            )}
+        </div>
         <h2>${art.title}</h2>
         <div class="artwork-images">
             ${imageHtml}
         </div>
     `;
+
+    modalBody
+    .querySelectorAll('.nav-thumb[data-art-id]')
+    .forEach(el => {
+        el.addEventListener('click', async () => {
+            const targetId = el.dataset.artId;
+            const targetArt = artworks.find(a => a.id === targetId);
+
+            if (targetArt) {
+                await openArtwork(targetArt);
+            }
+        });
+    });
 
     history.pushState(
         {},
