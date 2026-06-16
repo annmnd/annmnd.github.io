@@ -34,8 +34,8 @@ async function loadArtworks() {
             </div>
         `;
 
-        card.addEventListener('click', () => {
-            openArtwork(art);
+        card.addEventListener('click', async () => {
+            await openArtwork(art);
         });
 
         gallery.appendChild(card);
@@ -57,12 +57,23 @@ async function openArtwork(art) {
         return;
     }
 
+    if (images.length === 0) {
+        modalBody.innerHTML = `
+            <h2>${art.title}</h2>
+            <p>画像が登録されていません</p>
+        `;
+
+        modal.classList.remove('hidden');
+        return;
+    }
+
     let imageHtml = '';
     images.forEach(image => {
         imageHtml += `
             <img
                 class="artwork-image"
                 src="images/originals/${image.image_filename}"
+                alt="${art.title}"
                 loading="lazy"
             >
         `;
@@ -76,10 +87,26 @@ async function openArtwork(art) {
     `;
 
     modal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
 }
 
 document.getElementById('closeModal').addEventListener('click', () => {
     document.getElementById('modal').classList.add('hidden');
+    document.body.style.overflow = '';
+});
+
+document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+        document.getElementById('modal').classList.add('hidden');
+        document.body.style.overflow = '';
+    }
+});
+
+document.getElementById('modal').addEventListener('click', e => {
+    if (e.target.id === 'modal') {
+        e.currentTarget.classList.add('hidden');
+        document.body.style.overflow = '';
+    }
 });
 
 loadArtworks();
