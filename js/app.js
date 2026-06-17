@@ -107,19 +107,18 @@ function setupImageCounter(imagesCount) {
     const modal = document.getElementById('modal');
     const imageElements = modal.querySelectorAll('.artwork-image');
 
+    counter.textContent = `1 / ${imagesCount}`;
+    
     function updateCounter() {
         let currentImage = null;
-        let minDistance = Infinity;
+        let smallestTop = Infinity;
 
         imageElements.forEach(img => {
             const rect = img.getBoundingClientRect();
-            const imageCenter = rect.top + rect.height / 2;
-            const viewportCenter = window.innerHeight / 2;
-            const distance = Math.abs(imageCenter - viewportCenter);
-
-            if (distance < minDistance) {
-                minDistance = distance;
-                currentImage =img;
+            const distance = Math.abs(rect.top);
+            if (distance < smallestTop) {
+                smallestTop = distance;
+                currentImage = img;
             }
         });
 
