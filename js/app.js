@@ -180,7 +180,7 @@ async function openArtwork(art) {
                 });
             },
             {
-                threshold: 0.6
+                threshold: 0.8
             }
         );
 
