@@ -3,6 +3,7 @@ const SUPABASE_KEY = "sb_publishable_flbM2x1ZS30nzV3fqs_qTw_rpbphb72";
 
 let artworks = [];
 let currentArtworkId = null;
+let imageCounterHandler = null;
 
 const supabaseClient =
     supabase.createClient(
@@ -107,8 +108,12 @@ function setupImageCounter(imagesCount) {
     const modal = document.getElementById('modal');
     const imageElements = modal.querySelectorAll('.artwork-image');
 
+    if (imageCounterHandler) {
+        modal.removeEventListener('scroll', imageCounterHandler);
+    }
+
     counter.textContent = `1 / ${imagesCount}`;
-    
+
     function updateCounter() {
         let currentImage = null;
         let smallestTop = Infinity;
@@ -129,7 +134,8 @@ function setupImageCounter(imagesCount) {
 
     updateCounter();
 
-    modal.addEventListener('scroll', updateCounter);
+    imageCounterHandler = updateCounter;
+    modal.addEventListener('scroll', imageCounterHandler);
 }
 
 async function openArtwork(art) {
@@ -224,6 +230,13 @@ async function openArtwork(art) {
 }
 
 function closeModal() {
+    const modal = document.getElementById('modal');
+
+    if (imageCounterHandler) {
+        modal.removeEventListener('scroll', imageCounterHandler);
+        imageCounterHandler = null;
+    }
+
     document.getElementById('modal').classList.add('hidden');
 
     history.pushState(
