@@ -102,6 +102,37 @@ function createNavThumbnail(art, label) {
     `;
 }
 
+function setupImageCounter(imagesCount) {
+    const counter = document.getElementById('imageCounter');
+    const modal = document.getElementById('modal');
+    const imageElements = modal.querySelectorAll('.artwork-image');
+
+    function updateCounter() {
+        let currentImage = null;
+        let minDistance = Infinity;
+
+        imageElements.forEach(img => {
+            const rect = img.getBoundingClientRect();
+            const imageCenter = rect.top + rect.height / 2;
+            const viewportCenter = window.innerHeight / 2;
+            const distance = Math.abs(imageCenter - viewportCenter);
+
+            if (distance < minDistance) {
+                minDistance = distance;
+                currentImage =img;
+            }
+        });
+
+        if (currentImage) {
+            counter.textContent = `${currentImage.dataset.index} / ${imagesCount}`;
+        }
+    }
+
+    updateCounter();
+
+    modal.addEventListener('scroll', updateCounter);
+}
+
 async function openArtwork(art) {
     currentArtworkId = art.id;
     const modal = document.getElementById('modal');
@@ -167,27 +198,6 @@ async function openArtwork(art) {
         </div>
     `;
 
-    const counter = document.getElementById('imageCounter');
-    const imageElements = modalBody.querySelectorAll('.artwork-image');
-
-    const observer =
-        new IntersectionObserver(
-            entries => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        counter.textContent = `${entry.target.dataset.index} / ${images.length}`;
-                    }
-                });
-            },
-            {
-                threshold: 0.8
-            }
-        );
-
-    imageElements.forEach(img => {
-        observer.observe(img);
-    });
-
     modalBody
     .querySelectorAll('.nav-thumb[data-art-id]')
     .forEach(el => {
@@ -208,6 +218,9 @@ async function openArtwork(art) {
     );
 
     modal.classList.remove('hidden');
+
+    setupImageCounter(images.length);
+
     document.body.style.overflow = 'hidden';
 }
 
