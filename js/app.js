@@ -11,11 +11,23 @@ const supabaseClient =
         SUPABASE_KEY
     );
 
+function getJsTime() {
+    // 1. ユーザーが世界のどこにいても「日本時間の現在時刻」の文字列を生成
+    const now = new Date();
+    const formatter = new Intl.DateTimeFormat('sv-SE', {
+        timeZone: 'Asia/Tokyo',
+        year: 'numeric', month: '2-digit', day: '2-digit',
+        hour: '2-digit', minute: '2-digit', second: '2-digit'
+    });
+
+    return formatter.format(now).replace(' ', 'T'); // 例: "2026-06-18T08:30:00"
+}
+
 async function loadArtworks() {
     const { data, error } = await supabaseClient
         .from('artworks')
         .select('*')
-        .lte('published_at', new Date().toISOString())
+        .lte('published_at', getJsTime())
         .order('published_at', { ascending:false });
 
     if (error) {
