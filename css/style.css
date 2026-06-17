@@ -121,3 +121,15 @@ body {
 .nav-thumb.current .nav-title {
     font-weight:bold;
 }
+
+#imageCounter {
+    position:sticky;
+    top:10px;
+    z-index:10;
+    width:max-content;
+    margin-left:auto;
+    background:rgba(0,0,0,.7);
+    padding:6px 12px;
+    border-radius:20px;
+    font-size:14px;
+}

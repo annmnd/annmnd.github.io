@@ -131,10 +131,11 @@ async function openArtwork(art) {
     const nav = getArtworkNavigation(art.id);
 
     let imageHtml = '';
-    images.forEach(image => {
+    images.forEach((image, index) => {
         imageHtml += `
             <img
                 class="artwork-image"
+                data-index="${index + 1}"
                 src="images/originals/${image.image_filename}"
                 alt="${art.title}"
                 loading="lazy"
@@ -158,10 +159,34 @@ async function openArtwork(art) {
             )}
         </div>
         <h2>${art.title}</h2>
+        <div id="imageCounter">
+            1 / ${images.length}
+        </div>
         <div class="artwork-images">
             ${imageHtml}
         </div>
     `;
+
+    const counter = document.getElementById('imageCounter');
+    const imageElements = modalBody.querySelectorAll('.artwork-image');
+
+    const observer =
+        new IntersectionObserver(
+            entries => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        counter.textContent = `${entry.target.dataset.index} / ${images.length}`;
+                    }
+                });
+            },
+            {
+                threshold: 0.6
+            }
+        );
+
+    imageElements.forEach(img => {
+        observer.observe(img);
+    });
 
     modalBody
     .querySelectorAll('.nav-thumb[data-art-id]')
