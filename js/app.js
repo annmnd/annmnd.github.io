@@ -175,6 +175,12 @@ function setupImageCounter(imagesCount) {
         let currentImage = null;
         let smallestTop = Infinity;
 
+        const modal = document.getElementById('modal');
+        if (modal.scrollTop + modal.clientHeight >= modal.scrollHeight - 10) {
+            counter.textContent = `${imagesCount} / ${imagesCount}`;
+            return;
+        }
+
         imageElements.forEach(img => {
             const rect = img.getBoundingClientRect();
             const distance = Math.abs(rect.top);

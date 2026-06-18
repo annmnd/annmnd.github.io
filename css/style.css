@@ -125,15 +125,13 @@ body {
 }
 
 #imageCounter {
-    position:sticky;
-    top:10px;
-    z-index:10;
-    width:max-content;
-    margin-left:auto;
-    background:rgba(0,0,0,.7);
+    position:fixed;
+    top:70px;
+    right:20px;
+    z-index:1100;
+    background:rgba(0,0,0,.8);
     padding:6px 12px;
     border-radius:20px;
-    font-size:14px;
 }
 
 .artwork-header {
