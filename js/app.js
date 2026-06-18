@@ -315,9 +315,8 @@ async function openArtwork(art, updateHistory = true) {
     }
 
     modal.classList.remove('hidden');
-
+    modal.scrollTop = 0;
     setupImageCounter(images.length);
-
     document.body.style.overflow = 'hidden';
 }
 
@@ -328,6 +327,8 @@ function closeModal() {
         modal.removeEventListener('scroll', imageCounterHandler);
         imageCounterHandler = null;
     }
+
+    modal.scrollTop = 0;
 
     document.getElementById('modal').classList.add('hidden');
 
