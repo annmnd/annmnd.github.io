@@ -54,14 +54,10 @@ body {
 }
 
 #closeModal {
-    position:sticky;
-    top:0;
-    float:right;
-    border:none;
-    background:#444;
-    color:white;
-    padding:8px 12px;
-    cursor:pointer;
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1200;
 }
 
 .artwork-images {
@@ -125,13 +121,13 @@ body {
 }
 
 #imageCounter {
-    position:fixed;
-    top:70px;
-    right:20px;
-    z-index:1100;
-    background:rgba(0,0,0,.8);
-    padding:6px 12px;
-    border-radius:20px;
+    position: fixed;
+    top: 70px;
+    right: 20px;
+    z-index: 1200;
+    background: rgba(0,0,0,.7);
+    padding: 6px 12px;
+    border-radius: 20px;
 }
 
 .artwork-header {
