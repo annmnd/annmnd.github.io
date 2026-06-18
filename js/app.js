@@ -11,6 +11,15 @@ const supabaseClient =
         SUPABASE_KEY
     );
 
+function trackArtworkView(artId, title) {
+    if (!window.gtag) return;
+
+    gtag('event', 'view_artwork', {
+        artwork_id: artId,
+        artwork_title: title
+    });
+}
+
 function getJsTime() {
     // 1. ユーザーが世界のどこにいても「日本時間の現在時刻」の文字列を生成
     const now = new Date();
@@ -213,6 +222,8 @@ function setupImageCounter(imagesCount) {
 
 async function openArtwork(art, updateHistory = true) {
     currentArtworkId = art.id;
+    trackArtworkView(art.id, art.title);
+
     const modal = document.getElementById('modal');
     const modalBody = document.getElementById('modalBody');
 
@@ -293,6 +304,12 @@ async function openArtwork(art, updateHistory = true) {
         }
 
         saveLiked(art.id);
+        if (window.gtag) {
+            gtag('event', 'like_artwork', {
+                artwork_id: art.id,
+                artwork_title: art.title
+            });
+        }
 
         const newLikeCount = await getLikeCount(art.id);
 
