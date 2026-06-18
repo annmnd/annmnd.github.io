@@ -23,7 +23,50 @@ function getJsTime() {
     return formatter.format(now).replace(' ', 'T'); // 例: "2026-06-18T08:30:00"
 }
 
-async function loadArtworks() {
+function hasLiked(artId) {
+    return localStorage.getItem(`liked_${artId}`) === 'true';
+}
+
+function saveLiked(artId) {
+    localStorage.setItem(`liked_${artId}`, 'true');
+}
+
+async function getLikeCount(artId) {
+    const { data, error } =
+        await supabaseClient
+            .from('artwork_like_counts')
+            .select('likes')
+            .eq('artwork_id', artId)
+            .single();
+
+    if (error) {
+        return 0;
+    }
+
+    return data.likes;
+}
+
+async function getLikeCounts() {
+
+    const { data, error } = await supabaseClient
+        .from('artwork_like_counts')
+        .select('*');
+
+    if (error) {
+        console.error(error);
+        return {};
+    }
+
+    const result = {};
+
+    data.forEach(row => {
+        result[row.artwork_id] = row.likes;
+    });
+
+    return result;
+}
+
+async function loadArtworks(autoOpen = true) {
     const { data, error } = await supabaseClient
         .from('artworks')
         .select('*')
@@ -34,6 +77,8 @@ async function loadArtworks() {
         console.error(error);
         return;
     }
+
+    const likeCounts = await getLikeCounts();
 
     artworks = data;
 
@@ -48,7 +93,7 @@ async function loadArtworks() {
             <img src="images/thumbnails/${art.thumbnail_filename}">
             <div class="overlay">
             <span>${art.title}</span>
-            <span>❤️ ${art.likes}</span>
+            <span>❤️ ${likeCounts[art.id] || 0}</span>
             </div>
         `;
 
@@ -62,7 +107,7 @@ async function loadArtworks() {
     const params = new URLSearchParams(window.location.search);
     const artId = params.get('art');
 
-    if (artId) {
+    if (autoOpen && artId) {
         const target = artworks.find(a => a.id === artId);
         if (target) {
             await openArtwork(target);
@@ -87,7 +132,7 @@ function getArtworkNavigation(artId) {
     };
 }
 
-function createNavThumbnail(art, label) {
+function createNavThumbnail(art, isCurrent = false) {
     if (!art) {
         return `
             <div class="nav-thumb empty"></div>
@@ -95,7 +140,7 @@ function createNavThumbnail(art, label) {
     }
 
     const currentClass =
-        label === '現在'
+        isCurrent
             ? ' current'
             : '';
 
@@ -177,6 +222,7 @@ async function openArtwork(art, updateHistory = true) {
     }
 
     const nav = getArtworkNavigation(art.id);
+    const likeCount = await getLikeCount(art.id);
 
     let imageHtml = '';
     images.forEach((image, index) => {
@@ -193,27 +239,53 @@ async function openArtwork(art, updateHistory = true) {
 
     modalBody.innerHTML = `
         <div class="artwork-nav">
-            ${createNavThumbnail(
-                nav.prev,
-                art.title
-            )}
-            ${createNavThumbnail(
-                nav.current,
-                art.title
-            )}
-            ${createNavThumbnail(
-                nav.next,
-                art.title
-            )}
+            ${createNavThumbnail(nav.prev)}
+            ${createNavThumbnail(nav.current, true)}
+            ${createNavThumbnail(nav.next)}
         </div>
-        <h2>${art.title}</h2>
-        <div id="imageCounter">
-            1 / ${images.length}
+        <div class="artwork-header">
+            <h2>${art.title}</h2>
+            <button id="likeButton" class="like-button">❤️ ${likeCount}</button>
         </div>
+        <div id="imageCounter">1 / ${images.length}</div>
         <div class="artwork-images">
             ${imageHtml}
         </div>
     `;
+
+    const likeButton = document.getElementById('likeButton');
+    if (hasLiked(art.id)) {
+        likeButton.classList.add('liked');
+        likeButton.disabled = true;
+    }
+
+    // いいねボタン
+    likeButton.addEventListener('click', async () => {
+        if (hasLiked(art.id)) {
+            return;
+        }
+
+        const { error } = await supabaseClient
+            .from('artwork_likes')
+            .insert({
+                artwork_id: art.id
+            });
+
+        if (error) {
+            console.error(error);
+            return;
+        }
+
+        saveLiked(art.id);
+
+        const newLikeCount = await getLikeCount(art.id);
+
+        likeButton.classList.add('liked');
+        likeButton.disabled = true;
+        likeButton.textContent = `❤️ ${newLikeCount}`;
+
+        await loadArtworks(false);
+    });
 
     modalBody
     .querySelectorAll('.nav-thumb[data-art-id]')

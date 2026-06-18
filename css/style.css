@@ -133,3 +133,21 @@ body {
     border-radius:20px;
     font-size:14px;
 }
+
+.artwork-header {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.like-button {
+    border:none;
+    border-radius:20px;
+    padding:8px 16px;
+    cursor:pointer;
+    font-size:15px;
+}
+
+.like-button.liked {
+    opacity:0.7;
+}
