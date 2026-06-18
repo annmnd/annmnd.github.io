@@ -150,7 +150,7 @@ function setupImageCounter(imagesCount) {
     modal.addEventListener('scroll', imageCounterHandler);
 }
 
-async function openArtwork(art) {
+async function openArtwork(art, updateHistory = true) {
     currentArtworkId = art.id;
     const modal = document.getElementById('modal');
     const modalBody = document.getElementById('modalBody');
@@ -228,11 +228,13 @@ async function openArtwork(art) {
         });
     });
 
-    history.pushState(
-        {},
-        '',
-        `?art=${art.id}`
-    );
+    if (updateHistory) {
+        history.pushState(
+            { artId: art.id },
+            '',
+            `?art=${art.id}`
+        );
+    }
 
     modal.classList.remove('hidden');
 
@@ -250,12 +252,6 @@ function closeModal() {
     }
 
     document.getElementById('modal').classList.add('hidden');
-
-    history.pushState(
-        {},
-        '',
-        window.location.pathname
-    );
 
     document.body.style.overflow = '';
     currentArtworkId = null;
@@ -275,6 +271,22 @@ document.addEventListener('keydown', e => {
 document.getElementById('modal').addEventListener('click', e => {
     if (e.target.id === 'modal') {
         closeModal();
+    }
+});
+
+window.addEventListener('popstate',async () => {
+    const params = new URLSearchParams(window.location.search);
+    const artId = params.get('art');
+
+    if (!artId) {
+        closeModal();
+        return;
+    }
+
+    const target = artworks.find(a => a.id === artId);
+
+    if (target) {
+        await openArtwork(target, false);
     }
 });
 
