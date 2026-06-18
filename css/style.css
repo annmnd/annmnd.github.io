@@ -91,6 +91,8 @@ body {
 
 .nav-thumb img {
     width:100%;
+    aspect-ratio:336 / 432; /* サムネイルサイズで調整 */
+    object-fit:cover;
     display:block;
     border-radius:6px;
 }
@@ -150,4 +152,26 @@ body {
 
 .like-button.liked {
     opacity:0.7;
+}
+
+/* Mobile */
+@media (max-width:768px) {
+    .nav-title {
+        display:none;
+    }
+
+    .artwork-header {
+        display:flex;
+        flex-direction:column;
+        align-items:flex-start;
+        gap:10px;
+    }
+
+    .artwork-nav {
+        gap:8px;
+    }
+
+    .nav-thumb {
+        width:90px;
+    }
 }
