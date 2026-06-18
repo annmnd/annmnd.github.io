@@ -257,20 +257,30 @@ function closeModal() {
     currentArtworkId = null;
 }
 
+function closeModalAndResetUrl() {
+    history.replaceState(
+        {},
+        '',
+        window.location.pathname
+    );
+
+    closeModal();
+}
+
 // close button for modal
-document.getElementById('closeModal').addEventListener('click', closeModal);
+document.getElementById('closeModal').addEventListener('click', closeModalAndResetUrl);
 
 // close modal for esc key
 document.addEventListener('keydown', e => {
     if (e.key === 'Escape') {
-        closeModal();
+        closeModalAndResetUrl();
     }
 });
 
-// 背景クリック
+// close when clicking background
 document.getElementById('modal').addEventListener('click', e => {
     if (e.target.id === 'modal') {
-        closeModal();
+        closeModalAndResetUrl();
     }
 });
 
