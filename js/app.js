@@ -176,6 +176,13 @@ function setupImageCounter(imagesCount) {
         let smallestTop = Infinity;
 
         const modal = document.getElementById('modal');
+        
+        // スクロール開始前は常に1枚目
+        if (modal.scrollTop === 0) {
+            counter.textContent = `1 / ${imagesCount}`;
+            return;
+        }
+
         if (modal.scrollTop + modal.clientHeight >= modal.scrollHeight - 10) {
             counter.textContent = `${imagesCount} / ${imagesCount}`;
             return;
@@ -195,7 +202,10 @@ function setupImageCounter(imagesCount) {
         }
     }
 
-    updateCounter();
+    counter.textContent = `1 / ${imagesCount}`;
+    requestAnimationFrame(() => {
+        updateCounter();
+    });
 
     imageCounterHandler = updateCounter;
     modal.addEventListener('scroll', imageCounterHandler);
