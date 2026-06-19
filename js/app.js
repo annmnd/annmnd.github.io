@@ -11,10 +11,18 @@ const supabaseClient =
         SUPABASE_KEY
     );
 
-function trackArtworkView(artId, title) {
-    if (!window.gtag) return;
+function safeGtag(...args) {
+    window.dataLayer = window.dataLayer || [];
+    if (typeof gtag === 'function') {
+        gtag(...args);
+    } else {
+        // gtag未ロード時はdataLayerに直接積む
+        window.dataLayer.push(arguments);
+    }
+}
 
-    gtag('event', 'view_artwork', {
+function trackArtworkView(artId, title) {
+    safeGtag('event', 'view_artwork', {
         artwork_id: artId,
         artwork_title: title
     });
@@ -304,13 +312,11 @@ async function openArtwork(art, updateHistory = true) {
         }
 
         saveLiked(art.id);
-        if (window.gtag) {
-            gtag('event', 'like_artwork', {
-                artwork_id: art.id,
-                artwork_title: art.title
-            });
-        }
-
+        safeGtag('event', 'like_artwork', {
+            artwork_id: art.id,
+            artwork_title: art.title
+        });
+        
         const newLikeCount = await getLikeCount(art.id);
 
         likeButton.classList.add('liked');
