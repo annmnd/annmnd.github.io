@@ -249,7 +249,7 @@ async function openArtwork(art, updateHistory = true) {
     if (images.length === 0) {
         modalBody.innerHTML = `
             <h2>${art.title}</h2>
-            <p>画像が登録されていません</p>
+            <p>No images</p>
         `;
 
         modal.classList.remove('hidden');
