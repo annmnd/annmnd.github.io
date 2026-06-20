@@ -272,6 +272,10 @@ async function openArtwork(art, updateHistory = true) {
         `;
     });
 
+    const shareUrl = `https://annmnd.github.io/?art=${art.id}`;
+    const shareText = `${art.title} | annmnd`;
+    const shareLink = `https://x.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`;
+
     modalBody.innerHTML = `
         <div class="artwork-nav">
             ${createNavThumbnail(nav.prev)}
@@ -280,7 +284,10 @@ async function openArtwork(art, updateHistory = true) {
         </div>
         <div class="artwork-header">
             <h2>${art.title}</h2>
-            <button id="likeButton" class="like-button">❤️ ${likeCount}</button>
+            <div class="artwork-actions">
+                <button id="likeButton" class="like-button">❤️ ${likeCount}</button>
+                <a class="share-button" href="${shareLink}" target="_blank" rel="noopener">𝕏 Share</a>
+            </div>
         </div>
         <div id="imageCounter">1 / ${images.length}</div>
         <div class="artwork-images">
