@@ -45,14 +45,6 @@ body {
     padding:20px;
 }
 
-.modal-content {
-    max-width:900px;
-    margin:0 auto;
-    background:#222;
-    border-radius:12px;
-    padding:20px;
-}
-
 #closeModal {
     position: fixed;
     top: 20px;
@@ -60,16 +52,28 @@ body {
     z-index: 1200;
 }
 
+.modal-content {
+    max-width: 940px;
+    margin: 0 auto;
+    background: #222;
+    border-radius: 12px;
+    padding: 20px;
+}
+
 .artwork-images {
-    display:flex;
-    flex-direction:column;
-    gap:12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
 }
 
 .artwork-image {
-    width:100%;
-    display:block;
-    border-radius:8px;
+    width: auto;
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+    border-radius: 8px;
 }
 
 .artwork-nav {
