@@ -134,7 +134,6 @@ async function loadArtworks(autoOpen = false) {
         return;
     }
     isLoading = true;
-    document.getElementById('loading').classList.remove('hidden');
 
     const { data, error } = await supabaseClient
     .from('artworks')
