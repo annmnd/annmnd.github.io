@@ -2,7 +2,9 @@ import csv
 import sys
 from pathlib import Path
 
-if len(sys.argv) != 2:
+CHECK_UNUSED = "--check-unused" in sys.argv
+
+if len(sys.argv) < 2:
     print()
     print("Usage:")
     print("py generate_csv.py archive/2026-08.csv")
@@ -94,12 +96,12 @@ with open(MASTER_CSV, newline="", encoding="utf-8") as f:
 # Extra image check
 # ----------------------
 
-for file in ORIGINAL_DIR.glob("*.webp"):
-
-    if file.name not in expected_images:
-        errors.append(
-            f"Unused image: {file.name}"
-        )
+if CHECK_UNUSED:
+    for file in ORIGINAL_DIR.glob("*.webp"):
+        if file.name not in expected_images:
+            errors.append(
+                f"Unused image: {file.name}"
+            )
 
 # ----------------------
 # Generate artworks.csv
@@ -152,16 +154,17 @@ with open(
 # Statistics
 # ----------------------
 
-latest_date = max(
+dates = [
     row["published_at"]
     for row in artworks_rows
-)
+]
 
 print()
 print("===== Result =====")
 print(f"Artworks : {len(artworks_rows)}")
 print(f"Images   : {len(image_rows)}")
-print(f"Last date: {latest_date}")
+print(f"First date: {min(dates)}")
+print(f"Last date : {max(dates)}")
 
 # ----------------------
 # Errors
