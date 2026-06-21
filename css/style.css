@@ -99,6 +99,13 @@ body {
     display: block;
     margin: 0 auto;
     border-radius: 8px;
+    background: #222;
+    opacity: 0;
+    transition: opacity .25s ease;
+}
+
+.artwork-image.loaded {
+    opacity: 1;
 }
 
 .artwork-nav {
@@ -199,13 +206,6 @@ body {
 
 #loadTrigger {
     height: 1px;
-}
-
-.loading {
-    text-align: center;
-    padding: 20px;
-    color: #999;
-    font-size: 14px;
 }
 
 /* Mobile */

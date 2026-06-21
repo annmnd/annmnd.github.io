@@ -149,8 +149,6 @@ async function loadArtworks(autoOpen = false) {
 
     if (error) {
         console.error(error);
-        document.getElementById('loading').classList.add('hidden');
-
         isLoading = false;
         return;
     }
@@ -204,7 +202,6 @@ async function loadArtworks(autoOpen = false) {
         }
     }
 
-    document.getElementById('loading').classList.add('hidden');
     isLoading = false;
 }
 
@@ -374,6 +371,18 @@ async function openArtwork(art, updateHistory = true) {
             ${imageHtml}
         </div>
     `;
+
+    modalBody
+    .querySelectorAll('.artwork-image')
+    .forEach(img => {
+        if (img.complete) {
+            img.classList.add('loaded');
+        } else {
+            img.addEventListener('load', () => {
+                img.classList.add('loaded');
+            });
+        }
+    });
 
     const likeButton = document.getElementById('likeButton');
     if (hasLiked(art.id)) {
