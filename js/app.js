@@ -168,7 +168,7 @@ async function loadArtworks(autoOpen = false) {
 
     data.forEach(art => {
         const card = document.createElement('div');
-        card.className = 'card';
+        card.className = 'card loading';
         card.dataset.artId = art.id;
 
         card.innerHTML = `
@@ -178,6 +178,12 @@ async function loadArtworks(autoOpen = false) {
             <span class="card-like">❤️ ${likeCounts[art.id] || 0}</span>
             </div>
         `;
+
+        const img = card.querySelector('img');
+        img.addEventListener('load', () => {
+            img.classList.add('loaded');
+            card.classList.remove('loading');
+        });
 
         card.addEventListener('click', async () => {
             await openArtwork(art);
@@ -238,6 +244,7 @@ function createNavThumbnail(art, isCurrent = false) {
         >
             <img
                 src="images/thumbnails/${art.thumbnail_filename}"
+                loading="lazy"
                 alt="${art.title}"
             >
             <span class="nav-title">
