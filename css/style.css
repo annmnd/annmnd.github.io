@@ -208,6 +208,27 @@ body {
     height: 1px;
 }
 
+.site-header {
+    position: sticky;
+    top: 0;
+    z-index: 500;
+    padding: 14px 20px;
+    background: rgba(0,0,0,.6);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255,255,255,.1);
+}
+
+.site-title {
+    font-family: Arial, sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.site-tagline {
+    font-size: 13px;
+    color: #bbb;
+}
+
 /* Mobile */
 @media (max-width:768px) {
     .nav-title {
