@@ -2,6 +2,7 @@ const SUPABASE_URL = "https://eebtkvrvbuaxvkzfbtfo.supabase.co";
 const SUPABASE_KEY = "sb_publishable_flbM2x1ZS30nzV3fqs_qTw_rpbphb72";
 
 let artworks = [];
+let artworkIds = [];
 let currentArtworkId = null;
 let imageCounterHandler = null;
 
@@ -89,6 +90,45 @@ async function getLikeCounts() {
     return result;
 }
 
+async function loadArtworkIds() {
+    const { data, error } = await supabaseClient
+        .from('artworks')
+        .select('id')
+        .lte('published_at', getJsTime())
+        .order('published_at', { ascending: false })
+        .order('id', { ascending: false });
+
+    if (error) {
+        console.error(error);
+        return;
+    }
+
+    artworkIds = data.map(a => a.id);
+}
+
+async function getArtworkById(id) {
+    const loaded = artworks.find(a => a.id === id);
+
+    if (loaded) {
+        return loaded;
+    }
+
+    const { data, error } = await supabaseClient
+        .from('artworks')
+        .select('*')
+        .eq('id', id)
+        .single();
+
+    if (error) {
+        console.error(error);
+        return null;
+    }
+
+    artworks.push(data);
+
+    return data;
+}
+
 async function loadArtworks(autoOpen = false) {
     if (isLoading || !hasMore) {
         return;
@@ -147,7 +187,8 @@ async function loadArtworks(autoOpen = false) {
     const artId = params.get('art');
 
     if (autoOpen && artId) {
-        const target = artworks.find(a => a.id === artId);
+        const target = await getArtworkById(artId);
+
         if (target) {
             await openArtwork(target);
         }
@@ -157,18 +198,18 @@ async function loadArtworks(autoOpen = false) {
 }
 
 function getArtworkNavigation(artId) {
-    const currentIndex = artworks.findIndex(a => a.id === artId);
+    const currentIndex = artworkIds.indexOf(artId);
 
     return {
         prev:
             currentIndex > 0
-                ? artworks[currentIndex - 1]
+                ? artworkIds[currentIndex - 1]
                 : null,
         current:
-            artworks[currentIndex],
+            artId,
         next:
-            currentIndex < artworks.length - 1
-                ? artworks[currentIndex + 1]
+            currentIndex < artworkIds.length - 1
+                ? artworkIds[currentIndex + 1]
                 : null
     };
 }
@@ -281,6 +322,9 @@ async function openArtwork(art, updateHistory = true) {
     }
 
     const nav = getArtworkNavigation(art.id);
+    const prevArt = nav.prev ? await getArtworkById(nav.prev) : null;
+    const currentArt = await getArtworkById(nav.current);
+    const nextArt = nav.next ? await getArtworkById(nav.next) : null;
     const likeCount = await getLikeCount(art.id);
 
     let imageHtml = '';
@@ -302,9 +346,9 @@ async function openArtwork(art, updateHistory = true) {
 
     modalBody.innerHTML = `
         <div class="artwork-nav">
-            ${createNavThumbnail(nav.prev)}
-            ${createNavThumbnail(nav.current, true)}
-            ${createNavThumbnail(nav.next)}
+            ${createNavThumbnail(prevArt)}
+            ${createNavThumbnail(currentArt, true)}
+            ${createNavThumbnail(nextArt)}
         </div>
         <div class="artwork-header">
             <h2>${art.title}</h2>
@@ -434,7 +478,7 @@ window.addEventListener('popstate',async () => {
         return;
     }
 
-    const target = artworks.find(a => a.id === artId);
+    const target = await getArtworkById(artId);
 
     if (target) {
         await openArtwork(target, false);
@@ -456,4 +500,7 @@ observer.observe(
     document.getElementById('loadTrigger')
 );
 
-loadArtworks(true);
+(async () => {
+    await loadArtworkIds();
+    await loadArtworks(true);
+})();
