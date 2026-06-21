@@ -187,8 +187,9 @@ async function loadArtworks(autoOpen = false) {
     const artId = params.get('art');
 
     if (autoOpen && artId) {
+        console.log("URL art:", artId);
         const target = await getArtworkById(artId);
-
+        console.log("target:", target);
         if (target) {
             await openArtwork(target);
         }
