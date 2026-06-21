@@ -497,11 +497,10 @@ const observer = new IntersectionObserver(
     }
 );
 
-observer.observe(
-    document.getElementById('loadTrigger')
-);
-
 (async () => {
     await loadArtworkIds();
     await loadArtworks(true);
+    observer.observe(
+        document.getElementById('loadTrigger')
+    );
 })();
