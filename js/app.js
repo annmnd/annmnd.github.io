@@ -85,10 +85,11 @@ async function getLikeCounts() {
 
 async function loadArtworks(autoOpen = true) {
     const { data, error } = await supabaseClient
-        .from('artworks')
-        .select('*')
-        .lte('published_at', getJsTime())
-        .order('published_at', { ascending:false });
+    .from('artworks')
+    .select('*')
+    .lte('published_at', getJsTime())
+    .order('published_at', { ascending: false })
+    .order('thumbnail_filename', { ascending: false });
 
     if (error) {
         console.error(error);
