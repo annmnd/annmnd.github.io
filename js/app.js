@@ -5,6 +5,12 @@ let artworks = [];
 let currentArtworkId = null;
 let imageCounterHandler = null;
 
+const PAGE_SIZE = 20;
+
+let currentOffset = 0;
+let isLoading = false;
+let hasMore = true;
+
 const supabaseClient =
     supabase.createClient(
         SUPABASE_URL,
@@ -83,35 +89,50 @@ async function getLikeCounts() {
     return result;
 }
 
-async function loadArtworks(autoOpen = true) {
+async function loadArtworks(autoOpen = false) {
+    if (isLoading || !hasMore) {
+        return;
+    }
+    isLoading = true;
+
     const { data, error } = await supabaseClient
     .from('artworks')
     .select('*')
     .lte('published_at', getJsTime())
     .order('published_at', { ascending: false })
-    .order('thumbnail_filename', { ascending: false });
+    .order('id', { ascending: false })
+    .range(
+        currentOffset,
+        currentOffset + PAGE_SIZE - 1
+    );
 
     if (error) {
         console.error(error);
+        isLoading = false;
         return;
     }
 
+    if (data.length < PAGE_SIZE) {
+        hasMore = false;
+    }
+    currentOffset += data.length;
+
     const likeCounts = await getLikeCounts();
 
-    artworks = data;
+    artworks.push(...data);
 
     const gallery = document.getElementById('gallery');
-    gallery.innerHTML = '';
 
     data.forEach(art => {
         const card = document.createElement('div');
         card.className = 'card';
+        card.dataset.artId = art.id;
 
         card.innerHTML = `
             <img src="images/thumbnails/${art.thumbnail_filename}">
             <div class="overlay">
             <span>${art.title}</span>
-            <span>❤️ ${likeCounts[art.id] || 0}</span>
+            <span class="card-like">❤️ ${likeCounts[art.id] || 0}</span>
             </div>
         `;
 
@@ -131,6 +152,8 @@ async function loadArtworks(autoOpen = true) {
             await openArtwork(target);
         }
     }
+
+    isLoading = false;
 }
 
 function getArtworkNavigation(artId) {
@@ -330,8 +353,6 @@ async function openArtwork(art, updateHistory = true) {
         likeButton.classList.add('liked');
         likeButton.disabled = true;
         likeButton.textContent = `❤️ ${newLikeCount}`;
-
-        await loadArtworks(false);
     });
 
     modalBody
@@ -420,4 +441,19 @@ window.addEventListener('popstate',async () => {
     }
 });
 
-loadArtworks();
+const observer = new IntersectionObserver(
+    async entries => {
+        if (entries[0].isIntersecting) {
+            await loadArtworks();
+        }
+    },
+    {
+        rootMargin: '300px'
+    }
+);
+
+observer.observe(
+    document.getElementById('loadTrigger')
+);
+
+loadArtworks(true);

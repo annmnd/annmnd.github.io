@@ -172,6 +172,10 @@ body {
     opacity: 0.8;
 }
 
+#loadTrigger {
+    height: 1px;
+}
+
 /* Mobile */
 @media (max-width:768px) {
     .nav-title {
