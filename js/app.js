@@ -134,6 +134,7 @@ async function loadArtworks(autoOpen = false) {
         return;
     }
     isLoading = true;
+    document.getElementById('loading').classList.remove('hidden');
 
     const { data, error } = await supabaseClient
     .from('artworks')
@@ -148,6 +149,8 @@ async function loadArtworks(autoOpen = false) {
 
     if (error) {
         console.error(error);
+        document.getElementById('loading').classList.add('hidden');
+
         isLoading = false;
         return;
     }
@@ -195,6 +198,7 @@ async function loadArtworks(autoOpen = false) {
         }
     }
 
+    document.getElementById('loading').classList.add('hidden');
     isLoading = false;
 }
 
@@ -398,6 +402,12 @@ async function openArtwork(art, updateHistory = true) {
         likeButton.classList.add('liked');
         likeButton.disabled = true;
         likeButton.textContent = `❤️ ${newLikeCount}`;
+
+        const cardLike = document.querySelector(`[data-art-id="${art.id}"] .card-like`);
+
+        if (cardLike) {
+            cardLike.textContent = `❤️ ${newLikeCount}`;
+        }
     });
 
     modalBody
