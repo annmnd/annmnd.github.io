@@ -129,6 +129,8 @@ async function getArtworkById(id) {
     return data;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// loadArtworks
 async function loadArtworks(autoOpen = false) {
     if (isLoading || !hasMore) {
         return;
@@ -301,6 +303,8 @@ function setupImageCounter(imagesCount) {
     modal.addEventListener('scroll', imageCounterHandler);
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// openArtwork
 async function openArtwork(art, updateHistory = true) {
     currentArtworkId = art.id;
     trackArtworkView(art.id, art.title);
@@ -452,6 +456,8 @@ async function openArtwork(art, updateHistory = true) {
     document.body.style.overflow = 'hidden';
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// closeModal
 function closeModal() {
     const modal = document.getElementById('modal');
 
@@ -465,7 +471,21 @@ function closeModal() {
     document.getElementById('modal').classList.add('hidden');
 
     document.body.style.overflow = '';
+
+    const targetId = currentArtworkId;
     currentArtworkId = null;
+
+    if (targetId) {
+        const card = document.querySelector(`[data-art-id="${targetId}"]`);
+        if (card) {
+            requestAnimationFrame(() => {
+                card.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center'
+                });
+            });
+        }
+    }
 }
 
 function closeModalAndResetUrl() {
