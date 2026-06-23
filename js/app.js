@@ -7,6 +7,10 @@ let currentArtworkId = null;
 let imageCounterHandler = null;
 
 const PAGE_SIZE = 20;
+const FAVORITE_SVG = `
+<svg class="favorite-svg" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">
+  <path fill="currentColor" d="M11.403 18.989q-.286-.106-.503-.324L9.752 17.63q-2.67-2.425-4.71-4.717Q3 10.622 3 8.15q0-1.908 1.296-3.204T7.5 3.65q1.094 0 2.279.553T12 6.289q1.037-1.533 2.221-2.086T16.5 3.65q1.908 0 3.204 1.296T21 8.15q0 2.529-2.125 4.862t-4.652 4.622l-1.142 1.031q-.218.218-.513.323t-.587.106t-.578-.106"/>
+</svg>`;
 
 let currentOffset = 0;
 let isLoading = false;
@@ -174,7 +178,7 @@ async function loadArtworks(autoOpen = false) {
             <img src="images/thumbnails/${art.thumbnail_filename}">
             <div class="overlay">
             <span>${art.title}</span>
-            <span class="card-like">❤️ ${likeCounts[art.id] || 0}</span>
+            <span class="card-like">${FAVORITE_SVG} ${likeCounts[art.id] || 0}</span>
             </div>
         `;
 
@@ -365,7 +369,7 @@ async function openArtwork(art, updateHistory = true) {
         <div class="artwork-header">
             <h2>${art.title}</h2>
             <div class="artwork-actions">
-                <button id="likeButton" class="like-button">❤️ ${likeCount}</button>
+                <button id="likeButton" class="like-button">${FAVORITE_SVG} ${likeCount}</button>
                 <a class="share-button" href="${shareLink}" target="_blank" rel="noopener">𝕏 Share</a>
             </div>
         </div>
@@ -420,12 +424,12 @@ async function openArtwork(art, updateHistory = true) {
 
         likeButton.classList.add('liked');
         likeButton.disabled = true;
-        likeButton.textContent = `❤️ ${newLikeCount}`;
+        likeButton.textContent = `${FAVORITE_SVG} ${newLikeCount}`;
 
         const cardLike = document.querySelector(`[data-art-id="${art.id}"] .card-like`);
 
         if (cardLike) {
-            cardLike.textContent = `❤️ ${newLikeCount}`;
+            cardLike.textContent = `${FAVORITE_SVG} ${newLikeCount}`;
         }
     });
 

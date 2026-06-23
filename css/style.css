@@ -78,6 +78,14 @@ body {
     top: 20px;
     right: 20px;
     z-index: 1200;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
 }
 
 .modal-content {
@@ -181,6 +189,10 @@ body {
     padding:8px 16px;
     cursor:pointer;
     font-size:15px;
+
+    display: flex;
+    align-items: center;
+    gap: 0.25em;
 }
 
 .like-button.liked {
@@ -259,6 +271,18 @@ body {
 
 .site-footer a:hover {
     color: #c7dcff;
+}
+
+.favorite-svg {
+    font-size: 1.4em;
+    color: #FE3F70;
+    vertical-align: middle;
+}
+
+.card-like {
+    display: flex;
+    align-items: center;
+    gap: 0.25em;
 }
 
 /* Mobile */
