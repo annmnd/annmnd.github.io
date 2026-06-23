@@ -74,11 +74,12 @@ async function getLikeCount(artId) {
     return data.likes;
 }
 
-async function getLikeCounts() {
+async function getLikeCounts(ids) {
 
     const { data, error } = await supabaseClient
         .from('artwork_like_counts')
-        .select('*');
+        .select('*')
+        .in('artwork_id', ids);
 
     if (error) {
         console.error(error);
@@ -163,7 +164,8 @@ async function loadArtworks(autoOpen = false) {
     }
     currentOffset += data.length;
 
-    const likeCounts = await getLikeCounts();
+    const ids = data.map(a => a.id);
+    const likeCounts = await getLikeCounts(ids);    
 
     artworks.push(...data);
 
@@ -327,6 +329,13 @@ async function openArtwork(art, updateHistory = true) {
         return;
     }
 
+    // 2枚目以降を先読み
+    images.slice(1).forEach(image => {
+        const preload = new Image();
+        preload.src =
+            `images/originals/${image.image_filename}`;
+    });
+
     if (images.length === 0) {
         modalBody.innerHTML = `
             <h2>${art.title}</h2>
@@ -351,7 +360,7 @@ async function openArtwork(art, updateHistory = true) {
                 data-index="${index + 1}"
                 src="images/originals/${image.image_filename}"
                 alt="${art.title}"
-                loading="lazy"
+                loading="eager"
             >
         `;
     });
@@ -378,6 +387,14 @@ async function openArtwork(art, updateHistory = true) {
             ${imageHtml}
         </div>
     `;
+
+    const shareButton = modalBody.querySelector('.share-button');
+    shareButton?.addEventListener('click', () => {
+        safeGtag('event', 'share_artwork', {
+            artwork_id: art.id,
+            artwork_title: art.title
+        });
+    });
 
     modalBody
     .querySelectorAll('.artwork-image')
