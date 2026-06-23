@@ -424,12 +424,12 @@ async function openArtwork(art, updateHistory = true) {
 
         likeButton.classList.add('liked');
         likeButton.disabled = true;
-        likeButton.textContent = `${FAVORITE_SVG} ${newLikeCount}`;
+        likeButton.innerHTML = `${FAVORITE_SVG} ${newLikeCount}`;
 
         const cardLike = document.querySelector(`[data-art-id="${art.id}"] .card-like`);
 
         if (cardLike) {
-            cardLike.textContent = `${FAVORITE_SVG} ${newLikeCount}`;
+            cardLike.innerHTML = `${FAVORITE_SVG} ${newLikeCount}`;
         }
     });
 
