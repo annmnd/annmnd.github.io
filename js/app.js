@@ -479,7 +479,7 @@ async function openArtwork(art, updateHistory = true) {
 
 ////////////////////////////////////////////////////////////////////////////////
 // closeModal
-function closeModal() {
+async function closeModal() {
     const modal = document.getElementById('modal');
 
     if (imageCounterHandler) {
@@ -497,7 +497,13 @@ function closeModal() {
     currentArtworkId = null;
 
     if (targetId) {
-        const card = document.querySelector(`[data-art-id="${targetId}"]`);
+        let card = document.querySelector(`[data-art-id="${targetId}"]`);
+
+        while (!card && hasMore) {
+            await loadArtworks();
+            card = document.querySelector(`[data-art-id="${targetId}"]`);
+        }
+
         if (card) {
             requestAnimationFrame(() => {
                 card.scrollIntoView({
@@ -509,30 +515,30 @@ function closeModal() {
     }
 }
 
-function closeModalAndResetUrl() {
+async function closeModalAndResetUrl() {
     history.replaceState(
         {},
         '',
         window.location.pathname
     );
 
-    closeModal();
+    await closeModal();
 }
 
 // close button for modal
 document.getElementById('closeModal').addEventListener('click', closeModalAndResetUrl);
 
 // close modal for esc key
-document.addEventListener('keydown', e => {
+document.addEventListener('keydown', async e => {
     if (e.key === 'Escape') {
-        closeModalAndResetUrl();
+        await closeModalAndResetUrl();
     }
 });
 
 // close when clicking background
-document.getElementById('modal').addEventListener('click', e => {
+document.getElementById('modal').addEventListener('click', async e => {
     if (e.target.id === 'modal') {
-        closeModalAndResetUrl();
+        await closeModalAndResetUrl();
     }
 });
 
