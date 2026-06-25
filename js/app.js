@@ -71,6 +71,10 @@ async function getLikeCount(artId) {
         return 0;
     }
 
+    if (!data) {
+        return 0;
+    }
+
     return data.likes;
 }
 
@@ -129,6 +133,10 @@ async function getArtworkById(id) {
         return null;
     }
 
+    if (!data) {
+        return null;
+    }
+    
     artworks.push(data);
 
     return data;
