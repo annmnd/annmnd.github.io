@@ -65,7 +65,7 @@ async function getLikeCount(artId) {
             .from('artwork_like_counts')
             .select('likes')
             .eq('artwork_id', artId)
-            .single();
+            .maybeSingle();
 
     if (error) {
         return 0;
@@ -122,7 +122,7 @@ async function getArtworkById(id) {
         .from('artworks')
         .select('*')
         .eq('id', id)
-        .single();
+        .maybeSingle();
 
     if (error) {
         console.error(error);
@@ -497,11 +497,11 @@ async function closeModal() {
     currentArtworkId = null;
 
     if (targetId) {
-        let card = document.querySelector(`[data-art-id="${targetId}"]`);
+        let card = document.querySelector(`.card[data-art-id="${targetId}"]`);
 
         while (!card && hasMore) {
             await loadArtworks();
-            card = document.querySelector(`[data-art-id="${targetId}"]`);
+            card = document.querySelector(`.card[data-art-id="${targetId}"]`);
         }
 
         if (card) {
