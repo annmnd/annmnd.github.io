@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://annmnd.github.io/sitemap.xml
