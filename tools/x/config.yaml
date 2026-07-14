@@ -1,0 +1,18 @@
+daily:
+  start_date: "2026-07-09"
+  start_art: 179
+
+schedule:
+  daily_time: "00:00"
+  gallery_time: "20:00"
+
+site:
+  base_url: "https://annmnd.github.io"
+
+paths:
+  originals: "../../images/originals"
+  output: "./output"
+
+templates:
+  daily: "x_daily.txt"
+  gallery: "x_gallery.txt"
