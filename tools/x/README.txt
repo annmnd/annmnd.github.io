@@ -58,7 +58,7 @@ python generate_posts.py ^
 次週分を生成する場合
 
 ```
-python generate_posts.py --next-week
+py generate_posts.py --next-week
 ```
 
 ---
