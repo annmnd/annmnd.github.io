@@ -1,10 +1,10 @@
 # Test
 
-art0042
-art0043
-art0045
-art0047
-art0050
-art0052
-art0055
-art0059
+art0061
+art0065
+art0068
+art0071
+art0075
+art0093
+art0095
+art0096
